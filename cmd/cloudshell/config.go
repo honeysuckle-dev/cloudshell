@@ -20,7 +20,7 @@ var conf = config.Map{
 		Shorthand: "r",
 	},
 	"command": &config.String{
-		Default:   "/bin/bash",
+		Default:   "/bin/zsh",
 		Usage:     "absolute path to command to run",
 		Shorthand: "t",
 	},

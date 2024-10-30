@@ -1,4 +1,4 @@
-FROM golang:1.16-alpine AS backend
+FROM docker.io/golang:1.16-alpine AS backend
 WORKDIR /go/src/cloudshell
 COPY ./cmd ./cmd
 COPY ./internal ./internal
@@ -25,15 +25,14 @@ RUN npm install
 
 FROM alpine:3.14.0
 WORKDIR /app
-RUN apk add --no-cache bash ncurses
+RUN apk add --no-cache bash ncurses zsh
+RUN set -ex && apk --no-cache add sudo
 COPY --from=backend /go/src/cloudshell/bin/cloudshell /app/cloudshell
 COPY --from=frontend /app/node_modules /app/node_modules
 COPY ./public /app/public
 RUN ln -s /app/cloudshell /usr/bin/cloudshell
-RUN adduser -D -u 1000 user
-RUN mkdir -p /home/user
-RUN chown user:user /app -R
 WORKDIR /
 ENV WORKDIR=/app
-USER user
+ENV TERM=xterm
+USER root
 ENTRYPOINT ["/app/cloudshell"]
